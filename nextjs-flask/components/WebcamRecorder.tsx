@@ -30,6 +30,7 @@ const WebcamRecorder: React.FC = () => {
 
   return (
     <div style={{ textAlign: 'center' }}>
+      <h1>Click on "Start Recording" to record your dance moves!</h1>
       <video ref={videoRef} autoPlay muted style={{ width: '100%', maxWidth: '640px' }} />
       <button 
         onClick={startRecording} 

@@ -1,0 +1,6 @@
+
+from propelauth_fastapi import init_auth
+
+"YOUR_AUTH_URL" = "https://5635017.propelauthtest.com"
+"YOUR_API_KEY" = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0vzKemiKzgZnGqIJagi1qzLbGMufp66oWtoJKoZlLtkeghWGlv6Macifwg+g83Z0o4f5Xo/Bekz1KVf5kayCqS9aM2VXLYAyVe0i36DMtcatWhP8CbXTCnXQF8+hE9tfd74nlGUvbWvDMt7HKPgmy6tJiyEmSPpuiaIFtivs0Q4nG7AKt6xhNOvqeDbCrOSEzlNZkJwZmPVpGT/uxPyPY6XNvOQFc6s31Ai2JH3dp4lozyFFPHoPgFFGuKOMaIyGJ8pYTZ9Kgq3h3rhrIUyay4KawTtngQ1FqHXXPJ8/wkWy+DXqRp9d9DsoSOg6ZD4eZ7cMy73kLG9QKuSrcGn4eQIDAQAB"
+auth = init_auth("YOUR_AUTH_URL", "YOUR_API_KEY")
