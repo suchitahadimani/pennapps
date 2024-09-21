@@ -103,7 +103,7 @@ def record_video():
                 cv.circle(frame, (data["x"], data["y"]), 3, (0, 255, 0), -1)
         
         out.write(frame)
-        if(len(frames_data) % 2 ==0 ):
+        for i in range(2):
             out.write(frame)
 
     cap.release()
