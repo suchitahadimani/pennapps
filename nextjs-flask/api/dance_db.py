@@ -2,13 +2,16 @@ import numpy as np
 import json
 import time
 import cv2 as cv
-from flask import Flask, jsonify, send_file, abort
+from flask import Flask, jsonify, send_file, abort, current_app
 from pymongo import MongoClient
 import gridfs
 import io
 from database_connection import get_database
 import requests
 from bson import ObjectId
+import os
+
+
 
 
 
@@ -30,7 +33,10 @@ BODY_PARTS = {
 width, height = 368, 368
 inWidth, inHeight = width, height
 
-net = cv.dnn.readNetFromTensorflow("human-pose-estimation-opencv/graph_opt.pb")
+
+net = cv.dnn.readNetFromTensorflow(os.path.join(os.getcwd(), "api/human-pose-estimation-opencv/graph_opt.pb"))
+
+#net = cv.dnn.readNetFromTensorflow("human-pose-estimation-opencv/graph_opt.pb")
 thr = 0.2
 
 def poseDetector(frame, timestamp):
@@ -61,7 +67,7 @@ def poseDetector(frame, timestamp):
         "image_height": frameHeight
     }
 
-@app.route("/api/python")
+@app.route("/api/welcome")
 def index():
     return "Welcome to the Dance Video Recorder API! Use /record to start recording."
 
@@ -114,7 +120,7 @@ def record_video():
 
 
 
-@app.route('/api/data', methods=['GET'])
+@app.route("/api/data", methods=['GET'])
 def get_pose_data():
     # Fetch the most recent pose data from the database
     recent_pose_data = db.pose_data.find_one({}, sort=[('_id', -1)])  # Sort by _id descending to get the most recent document
@@ -217,7 +223,11 @@ def random_message():
     except requests.exceptions.RequestException as e:
         print(f"Error generating random message: {e}")
         return jsonify({"error": "Failed to generate message."}), 500
+    
+@app.route("/api/python")
+def hello_world():
+    return "<p>Hello, World!</p>"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
