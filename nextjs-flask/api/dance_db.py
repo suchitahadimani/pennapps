@@ -84,7 +84,7 @@ def record_video():
 
     frames_data = []
     start_time = time.time()
-    duration = 5  # Record for 2 seconds
+    duration = 10
 
     
 
