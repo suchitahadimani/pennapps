@@ -75,12 +75,12 @@ def index():
 @app.route('/api/record', methods=['GET'])
 def record_video():
     cap = cv.VideoCapture(0)
+    actual_fps = cap.get(cv.CAP_PROP_FPS)
     frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
-    fps = 30
 
     fourcc = cv.VideoWriter_fourcc(*'mp4v')
-    out = cv.VideoWriter('temp.mp4', fourcc, fps, (frame_width, frame_height))
+    out = cv.VideoWriter('temp.mp4', fourcc, actual_fps, (frame_width, frame_height))
 
     frames_data = []
     start_time = time.time()
@@ -96,13 +96,15 @@ def record_video():
         current_time = time.time() - start_time
         frame_data = poseDetector(frame, current_time)
         frames_data.append(frame_data)
-        print(f"Time elapsed: {current_time:.2f}s, Frames captured: {len(frames_data)}")
+
         
         for part, data in frame_data["keypoints"].items():
             if data:
                 cv.circle(frame, (data["x"], data["y"]), 3, (0, 255, 0), -1)
         
         out.write(frame)
+        if(len(frames_data) % 2 ==0 ):
+            out.write(frame)
 
     cap.release()
     out.release()
@@ -208,7 +210,7 @@ def random_message():
     }
     data = {
         "temperature": 0.8,
-        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Generate a DIRECT (Do NOT explain your thought process) specifying the genre and overall vibe without filler content. Give ONE SENTENCE! {messages}"}],
+        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Generate a DIRECT (Do NOT explain your thought process) specifying the genre, mood, and beats per minute.  Give one complete sentence! {messages}"}],
         "model": "suchitahadimani/my-model",
         "stream": stream,
         "frequency_penalty": 0,
