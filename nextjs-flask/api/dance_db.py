@@ -206,7 +206,7 @@ def random_message():
     }
     data = {
         "temperature": 0.8,
-        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Generate a DIRECT (Do NOT explain your thought process merely give the DETAILED prompt) prompt for a 5-second music clip, specifying the genre, beat placement, and overall vibe without filler content. Limit response size to 200 characters{messages}"}],
+        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Generate a DIRECT (Do NOT explain your thought process) specifying the genre and overall vibe without filler content. Give ONE SENTENCE! {messages}"}],
         "model": "suchitahadimani/my-model",
         "stream": stream,
         "frequency_penalty": 0,
