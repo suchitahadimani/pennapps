@@ -110,6 +110,8 @@ def record_video():
     # Save video to MongoDB
     with open('temp.mp4', 'rb') as f:
         video_id = fs.put(f, filename='video.mp4')
+    
+    os.rename('temp.mp4', 'public/latest_video.mp4')
 
     # Save JSON data to MongoDB
     json_id = db.pose_data.insert_one({"frames": frames_data}).inserted_id

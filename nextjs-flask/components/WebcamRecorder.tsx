@@ -1,4 +1,3 @@
-// components/WebcamRecorder.tsx
 import React, { useState, useRef, useEffect } from 'react';
 
 const WebcamRecorder: React.FC = () => {
@@ -30,9 +29,22 @@ const WebcamRecorder: React.FC = () => {
   };
 
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
       <video ref={videoRef} autoPlay muted style={{ width: '100%', maxWidth: '640px' }} />
-      <button onClick={startRecording} disabled={isRecording}>
+      <button 
+        onClick={startRecording} 
+        disabled={isRecording} 
+        style={{ 
+          marginTop: '10px', 
+          backgroundColor: 'black', 
+          color: 'white', 
+          border: 'none', 
+          padding: '10px 20px', 
+          borderRadius: '5px', 
+          cursor: 'pointer', 
+          fontSize: '16px' 
+        }}
+      >
         {isRecording ? 'Recording...' : 'Start Recording'}
       </button>
     </div>
