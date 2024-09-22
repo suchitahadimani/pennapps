@@ -1,15 +1,29 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface VideoPlayerProps {
-  videoSrc: string;
   audioSrc: string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc, audioSrc }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ audioSrc }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const [videoSrc, setVideoSrc] = useState<string>('');
 
   useEffect(() => {
+    // Fetch the video URL from the backend
+    fetch('/api/video')
+      .then(response => {
+        if (response.ok) {
+          return response.blob();
+        }
+        throw new Error('Network response was not ok');
+      })
+      .then(blob => {
+        const videoUrl = URL.createObjectURL(blob);
+        setVideoSrc(videoUrl);
+      })
+      .catch(error => console.error('Error fetching video:', error));
+
     const video = videoRef.current;
     if (video) {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -42,9 +56,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc, audioSrc }) => {
         };
 
         video.onended = () => {
-          // Reset video and prepare for next play
           video.currentTime = 0; // Reset video to the beginning
-          // Optionally, you can stop the audio here if you want
           if (source) {
             source.stop();
           }

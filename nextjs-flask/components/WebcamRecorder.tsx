@@ -47,7 +47,7 @@ const WebcamRecorder: React.FC = () => {
       {!showPlayer ? (
         <>
           <h1>Click on "Start Recording" to record your dance moves!</h1>
-          <video ref={videoRef} autoPlay muted style={{ width: '100%', maxWidth: '640px' }} />
+          <video ref={videoRef} autoPlay muted style={{ width: '100%', maxWidth: '640px', border: '1px solid black' }} />
           <button 
             onClick={startRecording} 
             disabled={isRecording} 
@@ -68,7 +68,6 @@ const WebcamRecorder: React.FC = () => {
       ) : (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
           <VideoPlayer 
-            videoSrc="/latest_video.mp4"
             audioSrc="/hiphop.mp3"
           />
         </main>
@@ -76,5 +75,8 @@ const WebcamRecorder: React.FC = () => {
     </div>
   );
 };
+
+
+
 
 export default WebcamRecorder;

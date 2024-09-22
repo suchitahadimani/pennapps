@@ -112,8 +112,7 @@ def record_video():
     # Save video to MongoDB
     with open('temp.mp4', 'rb') as f:
         video_id = fs.put(f, filename='video.mp4')
-    
-    os.rename('temp.mp4', 'public/latest_video.mp4')
+
 
     # Save JSON data to MongoDB
     json_id = db.pose_data.insert_one({"frames": frames_data}).inserted_id
@@ -146,7 +145,7 @@ def download_latest_video():
         latest_video = fs.find_one(sort=[("uploadDate", -1)])  # Sort by uploadDate descending
         
         if latest_video:
-            return send_file(io.BytesIO(latest_video.read()), mimetype='video/mp4', as_attachment=True, download_name='latest_video.mp4')
+            return send_file(io.BytesIO(latest_video.read()), mimetype='video/mp4', as_attachment=True, download_name='/latest_video.mp4')
         else:
             return jsonify({"message": "No videos found."}), 404
     except Exception as e:
@@ -228,10 +227,6 @@ def random_message():
         print(f"Error generating random message: {e}")
         return jsonify({"error": "Failed to generate message."}), 500
     
-@app.route("/api/python")
-def hello_world():
-    return "<p>Hello, World!</p>"
-
 
 if __name__ == "__main__":
     app.run(debug=True)
