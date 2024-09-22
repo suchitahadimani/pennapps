@@ -9,10 +9,7 @@ import io
 from database_connection import get_database
 import requests
 from bson import ObjectId
-
-
-
-
+import os
 
 
 app = Flask(__name__)
@@ -34,7 +31,7 @@ width, height = 368, 368
 inWidth, inHeight = width, height
 
 
-net = cv.dnn.readNetFromTensorflow("/api/human-pose-estimation-opencv/graph_opt.pb")
+net = cv.dnn.readNetFromTensorflow(os.path.join(os.getcwd(), "api/human-pose-estimation-opencv/graph_opt.pb"))
 
 #net = cv.dnn.readNetFromTensorflow("human-pose-estimation-opencv/graph_opt.pb")
 thr = 0.2
@@ -75,7 +72,11 @@ def index():
 @app.route('/api/record', methods=['GET'])
 def record_video():
     cap = cv.VideoCapture(0)
-    actual_fps = cap.get(cv.CAP_PROP_FPS)
+    
+    if not cap.isOpened():
+        return jsonify({"error": "Could not open video device"}), 500
+
+    actual_fps = cap.get(cv.CAP_PROP_FPS)  # Default to 30 if FPS is not available
     frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
@@ -84,9 +85,7 @@ def record_video():
 
     frames_data = []
     start_time = time.time()
-    duration = 10
-
-    
+    duration = 4
 
     while (time.time() - start_time) < duration:
         ret, frame = cap.read()
@@ -97,11 +96,10 @@ def record_video():
         frame_data = poseDetector(frame, current_time)
         frames_data.append(frame_data)
 
-        
         for part, data in frame_data["keypoints"].items():
             if data:
                 cv.circle(frame, (data["x"], data["y"]), 3, (0, 255, 0), -1)
-        
+
         out.write(frame)
         for i in range(2):
             out.write(frame)
@@ -112,7 +110,8 @@ def record_video():
     # Save video to MongoDB
     with open('temp.mp4', 'rb') as f:
         video_id = fs.put(f, filename='video.mp4')
-
+    
+    os.rename('temp.mp4', 'public/latest_video.mp4')
 
     # Save JSON data to MongoDB
     json_id = db.pose_data.insert_one({"frames": frames_data}).inserted_id
@@ -123,19 +122,18 @@ def record_video():
 
 
 
+
 @app.route("/api/data", methods=['GET'])
 def get_pose_data():
-    # Fetch the most recent pose data from the database
+    
     recent_pose_data = db.pose_data.find_one({}, sort=[('_id', -1)])  # Sort by _id descending to get the most recent document
 
-    # Check if pose data is available
     if recent_pose_data:
         # Convert ObjectId to string
         recent_pose_data["_id"] = str(recent_pose_data["_id"])
         return jsonify(recent_pose_data), 200
     else:
         return jsonify({"message": "No pose data found."}), 404
-
 
 
 @app.route('/api/download_video', methods=['GET'])
@@ -209,7 +207,7 @@ def random_message():
     }
     data = {
         "temperature": 0.8,
-        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Generate a DIRECT (Do NOT explain your thought process) specifying the genre, mood, and beats per minute.  Give one complete sentence! {messages}"}],
+        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Do NOT explain your thought process or give a filler introduction. Generate a concise prompt for a song, specifying the genre, mood, topic, and beats per minute. Give one complete sentence! {messages}"}],
         "model": "suchitahadimani/my-model",
         "stream": stream,
         "frequency_penalty": 0,

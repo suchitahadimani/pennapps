@@ -2,27 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface VideoPlayerProps {
   audioSrc: string;
+  videoSrc:string;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ audioSrc }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc, audioSrc }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const [videoSrc, setVideoSrc] = useState<string>('');
+  const [randomMessage, setRandomMessage] = useState<string>('');
 
   useEffect(() => {
-    // Fetch the video URL from the backend
-    fetch('/api/video')
+    // Fetch the random message
+    fetch('/api/random_message')
       .then(response => {
-        if (response.ok) {
-          return response.blob();
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-        throw new Error('Network response was not ok');
+        return response.json();
       })
-      .then(blob => {
-        const videoUrl = URL.createObjectURL(blob);
-        setVideoSrc(videoUrl);
+      .then(data => {
+        if (data.message) {
+          setRandomMessage(data.message);
+        } else {
+          setRandomMessage('No message available.');
+        }
       })
-      .catch(error => console.error('Error fetching video:', error));
+      .catch(error => console.error('Error fetching random message:', error));
+  }, []);
+
+  useEffect(() => {
 
     const video = videoRef.current;
     if (video) {
@@ -74,7 +81,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ audioSrc }) => {
   }, [audioSrc]);
 
   return (
-    <video ref={videoRef} src={videoSrc} controls />
+    <div>
+      <h2>{randomMessage}</h2> {/* Display the random message here */}
+      <video ref={videoRef} src={videoSrc} controls />
+    </div>
   );
 };
 

@@ -68,6 +68,7 @@ const WebcamRecorder: React.FC = () => {
       ) : (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
           <VideoPlayer 
+            videoSrc="/latest_video.mp4"
             audioSrc="/hiphop.mp3"
           />
         </main>
