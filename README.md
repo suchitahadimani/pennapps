@@ -1,6 +1,8 @@
 # Khaki AI
 Made for PennApps XXV
 
+![Alt text](Khaki-AI_1.jpg)
+
 ## Inspiration
 We set out to create a tool that unleashes dancers' creativity by syncing their moves with AI-generated music that matches perfectly. Inspired by the vibrant dance scenes on TikTok and Instagram, where beats and moves are inseparable, we wanted to take it to the next level. Imagine dancing to music made just for your style, effortlessly turning your moves into shareable, jaw-dropping videos with custom soundtracks. With our tool, dancers don’t just follow the beat—they create it! It's like having the DJ that grooves with you.
 
