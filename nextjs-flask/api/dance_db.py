@@ -9,7 +9,7 @@ import io
 from database_connection import get_database
 import requests
 from bson import ObjectId
-import os
+
 
 
 
@@ -34,7 +34,7 @@ width, height = 368, 368
 inWidth, inHeight = width, height
 
 
-net = cv.dnn.readNetFromTensorflow(os.path.join(os.getcwd(), "api/human-pose-estimation-opencv/graph_opt.pb"))
+net = cv.dnn.readNetFromTensorflow("/api/human-pose-estimation-opencv/graph_opt.pb")
 
 #net = cv.dnn.readNetFromTensorflow("human-pose-estimation-opencv/graph_opt.pb")
 thr = 0.2
