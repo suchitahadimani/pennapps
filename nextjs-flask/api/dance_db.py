@@ -76,7 +76,7 @@ def record_video():
     if not cap.isOpened():
         return jsonify({"error": "Could not open video device"}), 500
 
-    actual_fps = cap.get(cv.CAP_PROP_FPS)  # Default to 30 if FPS is not available
+    actual_fps = cap.get(cv.CAP_PROP_FPS) 
     frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
@@ -207,7 +207,7 @@ def random_message():
     }
     data = {
         "temperature": 0.8,
-        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Do NOT explain your thought process or give a filler introduction. Generate a concise prompt for a song, specifying the genre, mood, topic, and beats per minute. Give one complete sentence! {messages}"}],
+        "messages": [{"role": "user", "content": f"Analyze the provided position coordinates and timestamps from the pose data. Do NOT explain your thought process or give a filler introduction. Generate a concise prompt for a song, specifying the genre, topic, and beats per minute. Use the following coordinates data and if coordinates of body parts are changing more with shorter time intervals, the song should tend happier. If the coordinates change less, it should tend sadder. Give one complete sentence! {messages}"}],
         "model": "suchitahadimani/my-model",
         "stream": stream,
         "frequency_penalty": 0,
@@ -220,6 +220,13 @@ def random_message():
         message = response.json()
         choices = message["choices"]
         content = choices[0].get("message").get("content")
+        
+        public_folder = 'public'  # Adjust the path if needed
+
+        os.makedirs(public_folder, exist_ok=True)
+        with open(os.path.join(public_folder, 'prompt.txt'), 'w') as file:
+            file.write(f"{content}")
+
         return jsonify({"message": content}), 200
     except requests.exceptions.RequestException as e:
         print(f"Error generating random message: {e}")
