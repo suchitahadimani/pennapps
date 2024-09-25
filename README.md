@@ -1,6 +1,7 @@
 # Khaki AI
 Made for PennApps XXV
-## Won Most Creative Hack
+
+**Won Most Creative Hack!** 🏆
 
 ![Alt text](Khaki-AI_1.jpg)
 
